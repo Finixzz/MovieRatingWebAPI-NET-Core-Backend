@@ -14,6 +14,8 @@ namespace MovieRatingEngine.DAL.Profiles
         public MappingProfile()
         {
             CreateMap<Movie, ReadMovieDTO>().ReverseMap();
+            CreateMap<Rating, ReadRatingDTO>().ReverseMap();
+            CreateMap<Cast, ReadCastDTO>().ReverseMap();
         }
     }
 }

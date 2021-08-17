@@ -62,11 +62,14 @@ namespace MovieRatingEngine.AhmetDurmic.WebApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetMovieByIdAsync(int id)
         {
-            Movie movieInDb = await _movieRepository.GetByIdAsync(id);
-            if (movieInDb == null)
+            var getMovieByIdQuery = new GetMovieByIdQuery(id);
+
+            ReadMovieDTO movieDTO = (ReadMovieDTO)await _broker.Send(getMovieByIdQuery);
+
+            if (movieDTO == null)
                 return NotFound();
 
-            return Ok(movieInDb);
+            return Ok(movieDTO);
         }
 
         [HttpGet]

@@ -48,7 +48,7 @@ namespace MovieRatingEngine.DAL.Interfaces.Implementation
 
         public async Task<Movie> GetByIdAsync(int id)
         {
-            return await _appDbContext.Movies.Where(c => c.MovieId == id).SingleOrDefaultAsync();
+            return await _appDbContext.Movies.Where(c => c.MovieId == id).Include(movies => movies.Casts).Include(movies => movies.Ratings).SingleOrDefaultAsync();
         }
 
         public async Task<Movie> SaveAsync(Movie movie)

@@ -58,6 +58,18 @@ namespace MovieRatingEngine.AhmetDurmic.WebApi.Controllers
 
 
         [HttpGet]
+        [Route("api/[controller]/{id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetMovieByIdAsync(int id)
+        {
+            Movie movieInDb = await _movieRepository.GetByIdAsync(id);
+            if (movieInDb == null)
+                return NotFound();
+
+            return Ok(movieInDb);
+        }
+
+        [HttpGet]
         [Route("api/[controller]/toptenrated")]
         [AllowAnonymous]
 

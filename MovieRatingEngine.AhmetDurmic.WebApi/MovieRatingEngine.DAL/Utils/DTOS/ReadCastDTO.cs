@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MovieRatingEngine.DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,8 @@ namespace MovieRatingEngine.DAL.Utils.DTOS
         public int CastId { get; set; }
         public int MovieId { get; set; }
         public int ActorId { get; set; }
+
+        public virtual ReadActorDTO Actor { get; set; }
+
     }
 }

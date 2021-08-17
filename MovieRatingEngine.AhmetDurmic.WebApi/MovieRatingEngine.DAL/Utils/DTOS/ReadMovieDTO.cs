@@ -11,18 +11,21 @@ namespace MovieRatingEngine.DAL.Utils.DTOS
     {
         public ReadMovieDTO()
         {
-            Casts = new HashSet<ReadCastDTO>();
             Ratings = new HashSet<ReadRatingDTO>();
-        }
+            Actors = new HashSet<ReadActorDTO>();
+    }
 
-        public int MovieId { get; set; }
+    public int MovieId { get; set; }
         public string Title { get; set; }
         public string ImagePath { get; set; }
         public string Description { get; set; }
         public DateTime? ReleaseDate { get; set; }
 
-        public virtual ICollection<ReadCastDTO> Casts { get; set; }
+        public virtual ICollection<ReadActorDTO> Actors { get; set; }
+
         public virtual ICollection<ReadRatingDTO> Ratings { get; set; }
+
+
         public decimal TotalRating { get; set; }
     }
 }

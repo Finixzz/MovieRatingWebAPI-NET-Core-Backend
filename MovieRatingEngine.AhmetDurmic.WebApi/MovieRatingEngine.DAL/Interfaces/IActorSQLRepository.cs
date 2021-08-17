@@ -9,12 +9,6 @@ namespace MovieRatingEngine.DAL.Interfaces
 {
     public interface IActorSQLRepository
     {
-        Task<Actor> GetByIdAsync(int id);
-
-        Task<Actor> SaveAsync(Actor actor);
-
-        Task<Actor> EditAsync(Actor actor,int id);
-
-        Task<Actor> DeleteAsync(Actor actor);
+        Task<List<Actor>> GetAllByMovieIdAsync(int movieId);
     }
 }

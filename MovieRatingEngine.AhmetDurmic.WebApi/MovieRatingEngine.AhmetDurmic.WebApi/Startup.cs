@@ -95,6 +95,8 @@ namespace MovieRatingEngine.AhmetDurmic.WebApi
 
             services.AddScoped<IRatingSQLRepository, RatingRepository>();
 
+            services.AddScoped<IActorSQLRepository, ActorRepository>();
+
             services.AddMediatR(typeof(CreateUserCommand).Assembly);
 
             services.AddMediatR(typeof(SaveMovieCommand).Assembly);

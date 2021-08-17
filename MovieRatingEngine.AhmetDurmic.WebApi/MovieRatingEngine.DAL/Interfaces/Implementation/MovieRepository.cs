@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieRatingEngine.DAL.Models;
+using MovieRatingEngine.DAL.Utils.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,12 +44,12 @@ namespace MovieRatingEngine.DAL.Interfaces.Implementation
 
         public async Task<List<Movie>> GetAllAsync()
         {
-            return await _appDbContext.Movies.Include(movies=>movies.Casts).Include(movies=>movies.Ratings).ToListAsync();
+            return await _appDbContext.Movies.Include(movies=>movies.Ratings).ToListAsync();
         }
 
         public async Task<Movie> GetByIdAsync(int id)
         {
-            return await _appDbContext.Movies.Where(c => c.MovieId == id).Include(movies => movies.Casts).Include(movies => movies.Ratings).SingleOrDefaultAsync();
+            return await _appDbContext.Movies.Where(c => c.MovieId == id).Include(movies => movies.Ratings).SingleOrDefaultAsync();
         }
 
         public async Task<Movie> SaveAsync(Movie movie)

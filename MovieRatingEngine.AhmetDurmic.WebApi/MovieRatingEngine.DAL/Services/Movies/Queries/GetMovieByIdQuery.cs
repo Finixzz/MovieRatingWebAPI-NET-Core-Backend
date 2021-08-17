@@ -25,12 +25,14 @@ namespace MovieRatingEngine.DAL.Services.Movies.Queries
     public class GetMovieByIdQueryHandler : IRequestHandler<GetMovieByIdQuery, object>
     {
         private IMovieSQLRepository _movieRepository;
+        private IActorSQLRepository _actorRepository;
         private IMapper _mapper;
 
-        public GetMovieByIdQueryHandler(IMovieSQLRepository _movieRepository, IMapper _mapper)
+        public GetMovieByIdQueryHandler(IMovieSQLRepository _movieRepository, IMapper _mapper, IActorSQLRepository _actorRepository)
         {
             this._movieRepository = _movieRepository;
             this._mapper = _mapper;
+            this._actorRepository = _actorRepository;
         }
         public async Task<object> Handle(GetMovieByIdQuery request, CancellationToken cancellationToken)
         {
@@ -39,6 +41,7 @@ namespace MovieRatingEngine.DAL.Services.Movies.Queries
                 return null;
 
             ReadMovieDTO movieDTO = _mapper.Map<Movie, ReadMovieDTO>(movieInDb);
+            movieDTO.Actors = _mapper.Map<List<Actor>,List<ReadActorDTO>>(await _actorRepository.GetAllByMovieIdAsync(movieDTO.MovieId));
 
             if(movieDTO.Ratings.Count!=0)
             {

@@ -19,10 +19,12 @@ namespace MovieRatingEngine.DAL.Services.Movies.Queries
     public class GetAllMoviesQueryHandler : IRequestHandler<GetAllMoviesQuery, object>
     {
         private IMovieSQLRepository _movieRepository;
+        private IActorSQLRepository _actorRepository;
         private IMapper _mapper;
 
-        public GetAllMoviesQueryHandler(IMovieSQLRepository _movieRepository, IMapper _mapper)
+        public GetAllMoviesQueryHandler(IMovieSQLRepository _movieRepository, IMapper _mapper, IActorSQLRepository _actorRepository)
         {
+            this._actorRepository = _actorRepository;
             this._movieRepository = _movieRepository;
             this._mapper = _mapper;
         }
@@ -35,7 +37,9 @@ namespace MovieRatingEngine.DAL.Services.Movies.Queries
             {
                 if(movieDTOs[i].Ratings.Count!=0)
                     movieDTOs[i].TotalRating = (decimal)movieDTOs[i].Ratings.Sum(c => c.Rating1) / movieDTOs[i].Ratings.Count();
-                
+
+                movieDTOs[i].Actors = _mapper.Map<List<Actor>, List<ReadActorDTO>>(await _actorRepository.GetAllByMovieIdAsync(movieDTOs[i].MovieId));
+
             }
 
             return movieDTOs.OrderByDescending(c => c.TotalRating);

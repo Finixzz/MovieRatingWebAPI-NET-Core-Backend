@@ -1,6 +1,9 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MovieRatingEngine.DAL.Interfaces;
 using MovieRatingEngine.DAL.Models;
+using MovieRatingEngine.DAL.Utils.DTOS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +21,14 @@ namespace MovieRatingEngine.DAL.Services.Movies.Queries
     public class GetTopTenRatedMoviesQueryHandler : IRequestHandler<GetTopTenRatedMoviesQuery, object>
     {
         private MoviesDBContext _appDbContext;
+        private IActorSQLRepository _actorRepository;
+        private IMapper _mapper;
 
-        public GetTopTenRatedMoviesQueryHandler(MoviesDBContext _appDbContext)
+        public GetTopTenRatedMoviesQueryHandler(MoviesDBContext _appDbContext, IMapper _mapper, IActorSQLRepository _actorRepository)
         {
             this._appDbContext = _appDbContext;
+            this._actorRepository = _actorRepository;
+            this._mapper = _mapper;
         }
         public async Task<object> Handle(GetTopTenRatedMoviesQuery request, CancellationToken cancellationToken)
         {
@@ -34,17 +41,30 @@ namespace MovieRatingEngine.DAL.Services.Movies.Queries
                               r.Movie.Description,
                               ReleaseDate = (DateTime?)r.Movie.ReleaseDate
                           } into g
-                          select new
+                          select new ReadMovieDTO
                           {
-                              g.Key.MovieId,
-                              g.Key.Title,
-                              g.Key.ImagePath,
-                              g.Key.Description,
+                              MovieId= g.Key.MovieId,
+                              Title=g.Key.Title,
+                              ImagePath=g.Key.ImagePath,
+                              Description=g.Key.Description,
                               ReleaseDate = (DateTime?)g.Key.ReleaseDate,
                               TotalRating = (decimal)((decimal)g.Sum(p => p.r.Rating1) / g.Count(p => p.r.Rating1 != null))
-                          }).Take(10);
+                          });
 
-            return await result.OrderByDescending(c=>c.TotalRating).ToListAsync();
+
+            var tempResult = result.OrderByDescending(c => c.TotalRating).Take(10).ToListAsync();
+
+            List<ReadMovieDTO> movieDTOs = tempResult.Result;
+
+            int movieId = movieDTOs[0].MovieId;
+
+            for(int i = 0; i < movieDTOs.Count; i++)
+            {
+                movieDTOs[i].Actors = _mapper.Map<List<Actor>,List<ReadActorDTO>>( await _actorRepository.GetAllByMovieIdAsync(movieId));
+                movieDTOs[i].Ratings = _mapper.Map<List<Rating>,List<ReadRatingDTO>>(await _appDbContext.Ratings.Where(c => c.MovieId == movieId).ToListAsync());
+            }
+
+            return movieDTOs;
         }
     }
 }

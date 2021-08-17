@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace MovieRatingEngine.DAL.Services.Movies.Queries
 {
+    //Konceptualni primjer, getAll se nikad ne radi !
     public class GetAllMoviesQuery : IRequest<object>
     {
     }

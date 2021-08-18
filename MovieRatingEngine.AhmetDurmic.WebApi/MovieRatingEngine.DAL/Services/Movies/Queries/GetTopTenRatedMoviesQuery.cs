@@ -49,14 +49,10 @@ namespace MovieRatingEngine.DAL.Services.Movies.Queries
                               Description=g.Key.Description,
                               ReleaseDate = (DateTime?)g.Key.ReleaseDate,
                               TotalRating = (decimal)((decimal)g.Sum(p => p.r.Rating1) / g.Count(p => p.r.Rating1 != null))
-                          });
+                          }).OrderByDescending(c => c.TotalRating).Take(10);
 
 
-            var tempResult = result.OrderByDescending(c => c.TotalRating).Take(10).ToListAsync();
-
-            List<ReadMovieDTO> movieDTOs = tempResult.Result;
-
-            
+            List<ReadMovieDTO> movieDTOs = await  result.ToListAsync();
 
             for(int i = 0; i < movieDTOs.Count; i++)
             {

@@ -44,7 +44,7 @@ namespace MovieRatingEngine.DAL.Interfaces.Implementation
 
         public async Task<List<Movie>> GetAllAsync()
         {
-            return await _appDbContext.Movies.Include(movies=>movies.Ratings).ToListAsync();
+            return await _appDbContext.Movies.Include(movies => movies.Ratings).ToListAsync();
         }
 
         public async Task<Movie> GetByIdAsync(int id)

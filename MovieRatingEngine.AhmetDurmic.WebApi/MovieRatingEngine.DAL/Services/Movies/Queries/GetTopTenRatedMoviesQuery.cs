@@ -56,10 +56,11 @@ namespace MovieRatingEngine.DAL.Services.Movies.Queries
 
             List<ReadMovieDTO> movieDTOs = tempResult.Result;
 
-            int movieId = movieDTOs[0].MovieId;
+            
 
             for(int i = 0; i < movieDTOs.Count; i++)
             {
+                int movieId = movieDTOs[i].MovieId;
                 movieDTOs[i].Actors = _mapper.Map<List<Actor>,List<ReadActorDTO>>( await _actorRepository.GetAllByMovieIdAsync(movieId));
                 movieDTOs[i].Ratings = _mapper.Map<List<Rating>,List<ReadRatingDTO>>(await _appDbContext.Ratings.Where(c => c.MovieId == movieId).ToListAsync());
             }
